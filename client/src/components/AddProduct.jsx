@@ -12,21 +12,29 @@ export default function Addproduct() {
             [e.target.name]:e.target.value
         }))
     }
-    function handleAddProduct(e){
-        e.preventDefault()
-        API.post("/product/add",formData)
-            .then((res)=>{
-                if(res.status==201){
-                    alert("Product added successfully")
-                    navigate("/") 
-                }
-            })
-            .catch(err=>{
-                if(err?.response?.data.message){
-                    console.log(err)
-                }
-            })
-    }
+   function handleAddProduct(e){
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+
+    API.post("/product/add", formData, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then((res)=>{
+        if(res.status === 201){
+            alert("Product added successfully");
+            navigate("/");
+        }
+    })
+    .catch(err=>{
+        console.log(err);
+        if(err?.response?.status === 401){
+            alert("Unauthorized - Please login again");
+        }
+    });
+}
   return (
     <div className='container'>
         <div className='row'>
